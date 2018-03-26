@@ -123,8 +123,27 @@ rails server
 ```
 
 map the port for local access
-docker run -i -t -v ws-bundle:/usr/local/bundle -v /tmp/app:/app -p 8888:3000 -w /app --name ws-app --link ws-mysql:mysql --rm vyk:2.4 /bin/bash -c 'rails server'
+`docker run -i -t -v ws-bundle:/usr/local/bundle -v /tmp/app:/app -p 8888:3000 -w /app --name ws-app --link ws-mysql:mysql --rm vyk:2.4 /bin/bash -c 'rails server'`
 
-docker exec -i -t ws-app curl http://localhost:3000
-curl http://localhost:8888
-docker exec -i -t ws-app rake db:create
+access rails web remotely
+`docker exec -i -t ws-app curl http://localhost:3000`
+
+access rails web locally
+`curl http://localhost:8888`
+
+TODO: use database volume
+`docker exec -i -t ws-app rake db:create`
+
+currently getting error
+```
+docker run -i -t -v ws-bundle:/usr/local/bundle -v /tmp/app:/app -p 8888:3000 -w /app --name ws-app --link ws-mysql:mysql --rm vyk:2.4 /bin/bash
+root@85776e98b04d:/app# rake db:create
+#<Mysql2::Error: Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)>
+Couldn't create database for {"adapter"=>"mysql2", "encoding"=>"utf8", "pool"=>5, "username"=>"root", "password"=>nil, "host"=>"localhost", "database"=>"app_development"}, {:charset=>"utf8"}
+(If you set the charset manually, make sure you have a matching collation)
+Created database 'app_development'
+#<Mysql2::Error: Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)>
+Couldn't create database for {"adapter"=>"mysql2", "encoding"=>"utf8", "pool"=>5, "username"=>"root", "password"=>nil, "host"=>"localhost", "database"=>"app_test"}, {:charset=>"utf8"}
+(If you set the charset manually, make sure you have a matching collation)
+Created database 'app_test'
+```
